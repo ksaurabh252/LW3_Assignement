@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_URL } from "../config";
 
 interface Transaction {
   _id: string;
@@ -28,10 +29,8 @@ const TransactionList: React.FC<TransactionListProps> = ({ onToast }) => {
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/algorand/transactions"
-      );
-      setTransactions(response.data);
+      const { data } = await axios.get(`${API_URL}/api/algorand/transactions`);
+      setTransactions(data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
       onToast("Error", "Failed to fetch transactions", "error");
@@ -42,7 +41,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ onToast }) => {
 
   const updateTransactionStatus = async (txId: string) => {
     try {
-      await axios.get(`http://localhost:5000/api/algorand/status/${txId}`);
+      await axios.get(`${API_URL}/api/algorand/status/${txId}`);
       fetchTransactions();
       onToast("Status Updated", "Transaction status refreshed", "success");
     } catch (error) {
@@ -160,7 +159,6 @@ const TransactionList: React.FC<TransactionListProps> = ({ onToast }) => {
           </button>
         </div>
       </div>
-
       <div className="p-6">
         <div className="space-y-4 max-h-96 overflow-y-auto">
           {transactions.length === 0 ? (

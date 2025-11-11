@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+// TransactionForm.tsx aur TransactionList.tsx mein
+import { API_URL } from '../config';
+
+const data = await axios.post(`${API_URL}/api/algorand/send`, FormData);
 
 interface TransactionData {
   from: string;
@@ -42,14 +46,14 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
+      const { data } = await axios.post(
         "http://localhost:5000/api/algorand/send",
         formData
       );
 
       onToast(
         "Transaction Submitted",
-        `Transaction ID: ${response.data.txId}`,
+        `Transaction ID: ${data.txId}`,
         "success"
       );
 
@@ -222,8 +226,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
             type="submit"
             disabled={loading}
             className={`w-full py-3 px-4 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
               }`}
           >
             {loading ? (

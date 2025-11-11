@@ -45,7 +45,7 @@ function App() {
             <TransactionForm onToast={addToast} />
           </div>
           <div>
-            <TransactionList />
+            <TransactionList onToast={addToast} />
           </div>
         </div>
       </div>
