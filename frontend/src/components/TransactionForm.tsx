@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-// TransactionForm.tsx aur TransactionList.tsx mein
 import { API_URL } from '../config';
-
-const data = await axios.post(`${API_URL}/api/algorand/send`, FormData);
 
 interface TransactionData {
   from: string;
@@ -35,41 +32,30 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
     e.preventDefault();
 
     if (!formData.to || formData.amount <= 0 || !formData.mnemonic) {
-      onToast(
-        "Validation Error",
-        "Please fill all required fields correctly",
-        "error"
-      );
+      onToast("Validation Error", "Please fill all required fields correctly", "error");
       return;
     }
 
     setLoading(true);
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:5000/api/algorand/send",
-        formData
-      );
+      // ✅ FIXED: Use API_URL
+      const { data } = await axios.post(`${API_URL}/api/algorand/send`, formData);
 
-      onToast(
-        "Transaction Submitted",
-        `Transaction ID: ${data.txId}`,
-        "success"
-      );
+      onToast("Transaction Submitted", `Transaction ID: ${data.txId}`, "success");
 
-      // Reset form
       setFormData((prev) => ({
         ...prev,
         to: "",
         amount: 0,
         note: "",
       }));
+
     } catch (error: any) {
       console.error("Transaction error:", error);
       onToast(
         "Transaction Failed",
-        error.response?.data?.error ||
-        "An error occurred while sending transaction",
+        error.response?.data?.error || "An error occurred while sending transaction",
         "error"
       );
     } finally {
@@ -77,10 +63,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
     }
   };
 
-  const handleChange = (
-    field: keyof TransactionData,
-    value: string | number
-  ) => {
+  const handleChange = (field: keyof TransactionData, value: string | number) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -91,18 +74,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
     <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl">
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-            />
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
           </svg>
           Send ALGO Transaction
         </h2>
@@ -114,10 +87,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="from"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="from" className="block text-sm font-medium text-gray-700 mb-1">
               Sender Address
             </label>
             <input
@@ -132,10 +102,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
           </div>
 
           <div>
-            <label
-              htmlFor="to"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="to" className="block text-sm font-medium text-gray-700 mb-1">
               Recipient Address *
             </label>
             <input
@@ -150,10 +117,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
           </div>
 
           <div>
-            <label
-              htmlFor="amount"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
               Amount (microALGOs) *
             </label>
             <input
@@ -172,10 +136,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
           </div>
 
           <div>
-            <label
-              htmlFor="mnemonic"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="mnemonic" className="block text-sm font-medium text-gray-700 mb-1">
               Sender Mnemonic *
             </label>
             <textarea
@@ -188,28 +149,15 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
               required
             />
             <div className="flex items-center gap-2 text-sm text-amber-600 mt-1">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
               <span>For testing purposes only. Never use real mnemonics.</span>
             </div>
           </div>
 
           <div>
-            <label
-              htmlFor="note"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="note" className="block text-sm font-medium text-gray-700 mb-1">
               Note (Optional)
             </label>
             <input
@@ -225,49 +173,21 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onToast }) => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 px-4 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
+            className={`w-full py-3 px-4 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
               }`}
           >
             {loading ? (
               <div className="flex items-center justify-center">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
                 Processing Transaction...
               </div>
             ) : (
               <div className="flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
                 Send Transaction
               </div>
